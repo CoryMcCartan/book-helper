@@ -1,0 +1,20 @@
+{
+  "name": "books",
+  "description": "",
+  "main": "index.html",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "vue": "~1.0.15",
+    "underscore": "~1.8.3",
+    "material-design-lite": "~1.0.6",
+    "localforage": "~1.3.3"
+  }
+}
