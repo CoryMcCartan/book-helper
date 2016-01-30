@@ -25,6 +25,10 @@ a.mdl-navigation__link > i.material-icons {
     right: 7px;
     line-height: 0.0;
 }
+a.mdl-navigation__link.selected {
+    background-color: #d0d0d0;
+    color: #222 !important;
+}
 
 #blank-poster {
     margin-top: -2em;

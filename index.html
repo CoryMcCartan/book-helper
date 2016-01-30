@@ -14,204 +14,176 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div id="app" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-        <!-- NAV BAR -->
-        <header class="mdl-layout__header">
-            <div class="mdl-layout__header-row">
-                <span class="mdl-layout-title">{{ views[currentView].display }}</span>
-                <div class="mdl-layout-spacer"></div>
-                <nav class="mdl-navigation">
-                    <a v-if="!modern" class="mdl-navigation__link" href="https://www.google.com/chrome/browser/desktop/index.html" id="noscript" target="_blank">
-                        This app requires a modern web browser. Click here to download.
-                    </a>
-                </nav>
+    <div id="app">
 
-                <!-- Right aligned menu below button -->
-                <button v-show="currentView == 'list'" id="sort-menu" class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">sort</i>
-                </button>
+    <layout :view-obj="views['list']" :current-view.sync="currentView">
+        <span slot="nav-bar">
+            <button id="sort-menu" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons">sort</i>
+            </button>
 
-                <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
-                    for="sort-menu">
-                    <li @click="currentSort = 'title'" :disabled="currentSort == 'title'" class="mdl-menu__item">By Title</li>
-                    <li @click="currentSort = 'author'" :disabled="currentSort == 'author'" class="mdl-menu__item">By Author</li>
-                    <li @click="currentSort = 'pages'" :disabled="currentSort == 'pages'" class="mdl-menu__item">By Page Count</li>
-                    <li @click="sortDirection = 1" :disabled="sortDirection == 1" class="mdl-menu__item">Sort Ascending</li>
-                    <li @click="sortDirection = -1" :disabled="sortDirection == -1" class="mdl-menu__item">Sort Descending</li>
-                </ul>
-            </div>
-        </header>
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect"
+                for="sort-menu">
+                <li @click="currentSort = 'title'" :disabled="currentSort == 'title'" class="mdl-menu__item">By Title</li>
+                <li @click="currentSort = 'author'" :disabled="currentSort == 'author'" class="mdl-menu__item">By Author</li>
+                <li @click="currentSort = 'pages'" :disabled="currentSort == 'pages'" class="mdl-menu__item">By Page Count</li>
+                <li @click="sortDirection = 1" :disabled="sortDirection == 1" class="mdl-menu__item">Sort Ascending</li>
+                <li @click="sortDirection = -1" :disabled="sortDirection == -1" class="mdl-menu__item">Sort Descending</li>
+            </ul>
+        </span>
 
-        <!-- SIDE MENU -->
-        <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title">{{* app.title }}</span>
-            <nav class="mdl-navigation">
-                <a v-for="view in views | filterBy 'inDrawer'" @click.prevent="changeView($key)" class="mdl-navigation__link" href="">
-                    <i class="material-icons">{{ view.icon }}</i>
-                    {{ view.display }}
-                </a>
-            </nav>
-        </div>
+        <div id="blank-poster" v-show="!Object.keys(books).length"> </div>
 
-        <main class="mdl-layout__content">
-        <div class="page-content">
-
-            <div id="list-view" v-show="currentView === 'list'">
-                <div id="blank-poster" v-show="!Object.keys(books).length"> </div>
-
-                <div class="list-card mdl-card mdl-shadow--2dp">
-                <ul class="mdl-list">
-                    <li v-for="(id, book) in books | orderBy currentSort sortDirection" @click="loadBook(id)">
-                        <span class="book-info">
-                            <span class="book-title mdl-typography--title">
-                                {{ book.title }}
-                            </span>
-                            <span class="attribution mdl-typography--caption">
-                                by
-                                <span class="book-author mdl-typography--body-1">
-                                    {{ book.author }}
-                                </span>
-                            </span>
+        <div class="list-card mdl-card mdl-shadow--2dp">
+        <ul class="mdl-list">
+            <li v-for="(id, book) in books | orderBy currentSort sortDirection" @click="loadBook(id)">
+                <span class="book-info">
+                    <span class="book-title mdl-typography--title">
+                        {{ book.title }}
+                    </span>
+                    <span class="attribution mdl-typography--caption">
+                        by
+                        <span class="book-author mdl-typography--body-1">
+                            {{ book.author }}
                         </span>
-
-                        <span class="spacer"></span>
-
-                        <button @click.stop="removeBook(id)" class="mdl-button mdl-js-button mdl-button--icon">
-                            <i class="material-icons">close</i>
-                        </button>
-                    </li>
-                </ul>
-                </div>
-
-                <button @click="changeView('add')" class="mdl-button mdl-js-button mdl-button--accent mdl-button--fab">
-                    <i class="material-icons">add</i>
-                </button>
-            </div>
-
-            <div id="add-view" v-show="currentView === 'add'">
-                <div class="add-card mdl-card mdl-shadow--2dp">
-                    <form action="#" @submit.prevent="addBook">
-                        <div class="add-input-container">
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input v-model="input.title" class="mdl-textfield__input" type="text" id="input-title">
-                                <label class="mdl-textfield__label" for="input-author">Title</label>
-                            </div>
-                            <span class="small-spacer"></span>
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input v-model="input.author" class="mdl-textfield__input" type="text" id="input-author">
-                                <label class="mdl-textfield__label" for="input-author">Author</label>
-                            </div>
-                            <span class="small-spacer"></span>
-                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <input v-model="input.pagecount" class="mdl-textfield__input" type="number" id="input-pagecount" min="1" step="1">
-                                <label class="mdl-textfield__label" for="input-pagecount">Number of Pages</label>
-                            </div>
-                        </div>
-                        <div class="add-button-container">
-                            <span class="spacer"></span>
-                            <button @click="cancelAdd" type="button" class="mdl-button mdl-js-button mdl-button--primary">
-                                Cancel
-                            </button>
-                            <span class="small-spacer"></span>
-                            <button class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised">
-                                Add Book
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div id="book-view" v-show="currentView === 'book'">
-                <div id="blank-poster" v-show="!currentBook"> </div>
-
-                <span v-show="currentBook" class="card-container">
-                    <div class="book-card mdl-card mdl-shadow--2dp">
-                        <span class="mdl-typography--display-1">
-                            {{ currentBook.title }}
-                        </span>
-                        <span class="book-author mdl-typography--title mdl-typography--text-uppercase">
-                            {{ currentBook.author }}
-                        </span>
-                        <div class="small-vspacer"></div>
-                    </div>
-
-                    <div class="book-card mdl-card mdl-card mdl-shadow--2dp">
-                        <span class="mdl-typography--headline">
-                            Page
-                        </span> 
-                        <span class="flex mdl-typography--headline">
-                            <span class="mdl-typography--display-3-color-contrast">
-                                {{ currentBook.currentPage }}
-                            </span>
-                            <span class="small-spacer"></span>
-                            <span class="small-spacer"></span>
-                            <span>of</span>
-                            <span class="small-spacer"></span>
-                            <span class="small-spacer"></span>
-                            <span class="mdl-typography--display-2">
-                                {{ currentBook.pages }}
-                            </span>
-                            <span class="spacer"></span>
-                            <span class="gray">
-                                {{ ~~(100 * currentBook.currentPage / currentBook.pages) }}%
-                            </span>
-                        </span> 
-                        <button v-show="!isReading" class="mdl-button mdl-js-button">
-                            Start Reading
-                        </button>
-                        <button v-show="isReading" class="mdl-button mdl-js-button">
-                            Stop Reading
-                        </button>
-                    </div>
-
+                    </span>
                 </span>
 
-                <button @click="changeView('dictionary')" class="mdl-button mdl-js-button mdl-button--accent mdl-button--fab">
-                    <i class="material-icons">search</i>
+                <span class="spacer"></span>
+
+                <button @click.stop="removeBook(id)" class="mdl-button mdl-js-button mdl-button--icon">
+                    <i class="material-icons">close</i>
                 </button>
-            </div>
-
-            <div id="dictionary-view" v-show="currentView === 'dictionary'">
-                <div class="dict-card mdl-card mdl-shadow--2dp">
-                    <form class="flex vcenter" action="#" @submit.prevent="searchDictionary">
-                        <span class="small-spacer"></span>
-                        <i class="material-icons">search</i>
-                        <input v-model="input.dict" @focus="definition = null" placeholder="Search for a word..." class="mdl-textfield__input search-input" type="text">
-                    </form>
-                </div>
-
-                <div v-show="definition" class="def-card mdl-card mdl-shadow--2dp">
-                    <span class="mdl-typography--title-color-contrast">
-                        {{ input.dict }}
-                    </span>
-                    <span>
-                        {{{ definition }}}
-                    </span>
-                </div>
-
-                <div v-show="definition" class="def-card mdl-card mdl-shadow--2dp">
-                    <span class="mdl-typography--caption">
-                        Look up on Google
-                    </span>
-                    <span class="mdl-typography--title-color-contrast">
-                        <a href="https://www.google.com/search?q=define:{{ input.dict }}">
-                            {{ input.dict }}
-                        </a>
-                    </span>
-                </div>
-
-                <button @click="changeView('book')" class="mdl-button mdl-js-button mdl-button--accent mdl-button--fab">
-                    <i class="material-icons">arrow_back</i>
-                </button>
-            </div>
-
+            </li>
+        </ul>
         </div>
-        </main>
+
+        <button @click="changeView('add')" class="mdl-button mdl-js-button mdl-button--accent mdl-button--fab">
+            <i class="material-icons">add</i>
+        </button>
+    </layout>
+
+    <layout :view-obj="views['add']" :current-view.sync="currentView">
+        <div class="add-card mdl-card mdl-shadow--2dp">
+            <form action="#" @submit.prevent="addBook">
+                <div class="add-input-container">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input v-model="input.title" class="mdl-textfield__input" type="text" id="input-title">
+                        <label class="mdl-textfield__label" for="input-author">Title</label>
+                    </div>
+                    <span class="small-spacer"></span>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input v-model="input.author" class="mdl-textfield__input" type="text" id="input-author">
+                        <label class="mdl-textfield__label" for="input-author">Author</label>
+                    </div>
+                    <span class="small-spacer"></span>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input v-model="input.pagecount" class="mdl-textfield__input" type="number" id="input-pagecount" min="1" step="1">
+                        <label class="mdl-textfield__label" for="input-pagecount">Number of Pages</label>
+                    </div>
+                </div>
+                <div class="add-button-container">
+                    <span class="spacer"></span>
+                    <button @click="cancelAdd" type="button" class="mdl-button mdl-js-button mdl-button--primary">
+                        Cancel
+                    </button>
+                    <span class="small-spacer"></span>
+                    <button class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised">
+                        Add Book
+                    </button>
+                </div>
+            </form>
+        </div>
+    </layout>
+
+    <layout :view-obj="views['book']" :current-view.sync="currentView">
+        <div id="blank-poster" v-show="!currentBook"> </div>
+
+        <span v-show="currentBook" class="card-container">
+            <div class="book-card mdl-card mdl-shadow--2dp">
+                <span class="mdl-typography--display-1">
+                    {{ currentBook.title }}
+                </span>
+                <span class="book-author mdl-typography--title mdl-typography--text-uppercase">
+                    {{ currentBook.author }}
+                </span>
+                <div class="small-vspacer"></div>
+            </div>
+
+            <div class="book-card mdl-card mdl-card mdl-shadow--2dp">
+                <span class="mdl-typography--headline">
+                    Page
+                </span> 
+                <span class="flex mdl-typography--headline">
+                    <span class="mdl-typography--display-3-color-contrast">
+                        {{ currentBook.currentPage }}
+                    </span>
+                    <span class="small-spacer"></span>
+                    <span class="small-spacer"></span>
+                    <span>of</span>
+                    <span class="small-spacer"></span>
+                    <span class="small-spacer"></span>
+                    <span class="mdl-typography--display-2">
+                        {{ currentBook.pages }}
+                    </span>
+                    <span class="spacer"></span>
+                    <span class="gray">
+                        {{ ~~(100 * currentBook.currentPage / currentBook.pages) }}%
+                    </span>
+                </span> 
+
+                <button @click="startReading" v-show="!isReading" class="mdl-button mdl-js-button">
+                    Start Reading
+                </button>
+                <button @click="stopReading" v-show="isReading" class="mdl-button mdl-js-button">
+                    Stop Reading
+                </button>
+            </div>
+        </span>
+
+        <button @click="changeView('dictionary')" class="mdl-button mdl-js-button mdl-button--accent mdl-button--fab">
+            <i class="material-icons">search</i>
+        </button>
+    </layout>
+
+    <layout :view-obj="views['dictionary']" :current-view.sync="currentView">
+        <div class="dict-card mdl-card mdl-shadow--2dp">
+            <form class="flex vcenter" action="#" @submit.prevent="searchDictionary">
+                <span class="small-spacer"></span>
+                <i class="material-icons">search</i>
+                <input v-model="input.dict" lazy @focus="definition = null" placeholder="Search for a word..." class="mdl-textfield__input search-input" type="text">
+            </form>
+        </div>
+
+        <div v-show="definition" class="def-card mdl-card mdl-shadow--2dp">
+            <span class="mdl-typography--title-color-contrast">
+                {{ input.dict }}
+            </span>
+            <span>
+                {{{ definition }}}
+            </span>
+        </div>
+
+        <div v-show="definition" class="def-card mdl-card mdl-shadow--2dp">
+            <span class="mdl-typography--caption">
+                Look up on Google
+            </span>
+            <span class="mdl-typography--title-color-contrast">
+                <a href="https://www.google.com/search?q=define:{{ input.dict }}">
+                    {{ input.dict }}
+                </a>
+            </span>
+        </div>
+    </layout>
+
     </div>
-    
+
     <script src="bower_components/vue/dist/vue.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="bower_components/localforage/dist/localforage.nopromises.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="bower_components/annyang/annyang.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/storage.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/load.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/layout.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

@@ -1,0 +1,42 @@
+<div v-show="active" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <header class="mdl-layout__header">
+
+        <button @click="changeView(viewObj.previous)" v-if="viewObj.mode === 'overlay'" class="mdl-layout-icon mdl-button mdl-js-button mdl-button--icon">
+            <i class="material-icons">arrow_back</i>
+        </button> 
+
+        <div class="mdl-layout__header-row">
+            <span class="mdl-layout-title">{{ viewObj.display }}</span>
+
+            <div class="mdl-layout-spacer"></div>
+
+            <nav class="mdl-navigation">
+                <a v-if="!modern" class="mdl-navigation__link" href="https://www.google.com/chrome/browser/desktop/index.html" id="noscript" target="_blank">
+                    This app requires a modern web browser. Click here to download.
+                </a>
+            </nav>
+
+            <slot name="nav-bar"></slot>
+        </div>
+
+    </header>
+
+    <div v-if="viewObj.mode === 'base'" class="mdl-layout__drawer">
+
+        <span class="mdl-layout-title">{{* app.title }}</span>
+
+        <nav class="mdl-navigation">
+            <a v-for="view in views | filterBy 'base'" :class="[view === currentView ? 'selected' : '']" @click.prevent="changeView($key)" class="mdl-navigation__link" href="">
+                <i class="material-icons">{{ view.icon }}</i>
+                {{ view.display }}
+            </a>
+        </nav>
+        
+    </div>
+
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <slot></slot>
+        </div>
+    </main>
+</div>

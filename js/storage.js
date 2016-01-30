@@ -15,7 +15,7 @@ window.StorageManager = {
      * Save user data to local store.
      */
     saveData: function() {
-        localforage.setItem(KEY, ViewModel.books, function(e) {
+        localforage.setItem(KEY, vm.books, function(e) {
             if (e) console.log(e);
         });
     },
