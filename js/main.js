@@ -175,6 +175,7 @@ window.ViewModel = new Vue({
         cancelAdd: function() {
             this.input.author = null;
             this.input.title = null;
+            this.input.pagecount = null;
             this.changeView("list");
         },
 

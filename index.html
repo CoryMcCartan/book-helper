@@ -164,8 +164,6 @@
                         </button>
                     </div>
 
-                    <div class="book-card mdl-card mdl-shadow--2dp">
-                    </div>
                 </span>
 
                 <button @click="changeView('dictionary')" class="mdl-button mdl-js-button mdl-button--accent mdl-button--fab">
@@ -188,6 +186,17 @@
                     </span>
                     <span>
                         {{{ definition }}}
+                    </span>
+                </div>
+
+                <div v-show="definition" class="def-card mdl-card mdl-shadow--2dp">
+                    <span class="mdl-typography--caption">
+                        Look up on Google
+                    </span>
+                    <span class="mdl-typography--title-color-contrast">
+                        <a href="https://www.google.com/search?q=define:{{ input.dict }}">
+                            {{ input.dict }}
+                        </a>
                     </span>
                 </div>
 
