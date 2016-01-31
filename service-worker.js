@@ -3,7 +3,7 @@
  */
 var CACHE_VERSION = "v1";
 var STATIC_CACHE = [
-    "bower_components/material-design-lite/material.min.css",
+    "https://storage.googleapis.com/code.getmdl.io/1.0.6/material.blue_grey-indigo.min.css"
     "bower_components/material-design-lite/material.min.js",
     "https://fonts.googleapis.com/css?family=Roboto:400,500,700,300",
     "https://fonts.googleapis.com/icon?family=Material+Icons",
