@@ -50,6 +50,7 @@ loadComponent("layout", "layout.html", {
     },
 
     methods: () => ({
-        changeView: window.globalFunctions.changeView
+        changeView: window.globalFunctions.changeView,
+        goBack: window.globalFunctions.goBack
     })
 });

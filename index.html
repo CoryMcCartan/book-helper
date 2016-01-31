@@ -66,7 +66,7 @@
     <layout :view-obj="views['add']" :current-view.sync="currentView">
         <div class="add-card mdl-card mdl-shadow--2dp">
             <form action="#" @submit.prevent="addBook">
-                <div class="add-input-container">
+                <div class="input-container">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input v-model="input.title" class="mdl-textfield__input" type="text" id="input-title">
                         <label class="mdl-textfield__label" for="input-author">Title</label>
@@ -97,9 +97,9 @@
     </layout>
 
     <layout :view-obj="views['book']" :current-view.sync="currentView">
-        <div id="blank-poster" v-show="!currentBook"> </div>
+        <div id="blank-poster" v-show="!currentBook.title"> </div>
 
-        <span v-show="currentBook" class="card-container">
+        <span v-show="currentBook.title" class="card-container">
             <div class="book-card mdl-card mdl-shadow--2dp">
                 <span class="mdl-typography--display-1">
                     {{ currentBook.title }}
@@ -110,7 +110,7 @@
                 <div class="small-vspacer"></div>
             </div>
 
-            <div class="book-card mdl-card mdl-card mdl-shadow--2dp">
+            <div class="book-card mdl-card mdl-shadow--2dp">
                 <span class="mdl-typography--headline">
                     Page
                 </span> 
@@ -139,6 +139,34 @@
                     Stop Reading
                 </button>
             </div>
+
+            <div v-if="isReading" class="book-card mdl-card mdl-shadow--2dp">
+                <span class="mdl-typography--caption">
+                    Time spent reading
+                </span>
+                <span class="mdl-typography--display-4 clock">
+                    {{ sessionTime }}
+                </span>
+            </div>
+
+            <div  class="book-card mdl-card mdl-shadow--2dp">
+                <span class="mdl-typography--caption">
+                    Total time spent reading this book
+                </span>
+                <span class="mdl-typography--display-2">
+                    {{ totalTime }}
+                </span>
+                <span class="small-vspacer"></span>
+                <span class="mdl-typography--caption">
+                    Average reading speed for this book
+                </span>
+                <span class="mdl-typography--display-2-color-contrast">
+                    {{ Math.round(36e5 * currentBook.currentPage / currentBook.timeReading) }} 
+                </span>
+                <span class="mdl-typography--subhead gray">
+                    pages per hour
+                </span>
+            </div>
         </span>
 
         <button @click="changeView('dictionary')" class="mdl-button mdl-js-button mdl-button--accent mdl-button--fab">
@@ -151,7 +179,7 @@
             <form class="flex vcenter" action="#" @submit.prevent="searchDictionary">
                 <span class="small-spacer"></span>
                 <i class="material-icons">search</i>
-                <input v-model="input.dict" lazy @focus="definition = null" placeholder="Search for a word..." class="mdl-textfield__input search-input" type="text">
+                <input v-model="input.dict" lazy @focus="definition = null" autocapitalize="off" placeholder="Search for a word..." class="mdl-textfield__input search-input" type="search">
             </form>
         </div>
 
@@ -176,6 +204,23 @@
         </div>
     </layout>
 
+    <layout :view-obj="views['page']" :current-view.sync="currentView">
+        <div class="add-card mdl-card mdl-shadow--2dp">
+            <form action="#" @submit.prevent="goBack()">
+                <div class="input-container">
+                    <span class="small-spacer"></span>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-dirty is-focused">
+                        <input v-model="currentBook.currentPage" class="mdl-textfield__input" type="number" autofocus value="1" id="input-page" min="1" step="1">
+                        <label class="mdl-textfield__label" for="input-page">Current Page</label>
+                    </div>
+                </div>
+                <button class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised">
+                    Save
+                </button>
+            </form>
+        </div>
+    </layout>
+
     </div>
 
     <script src="bower_components/vue/dist/vue.min.js" type="text/javascript" charset="utf-8"></script>
@@ -183,7 +228,9 @@
     <script src="bower_components/annyang/annyang.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/storage.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/load.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/router.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/layout.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/voice.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

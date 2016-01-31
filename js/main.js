@@ -48,35 +48,42 @@ window.views = {
     add: {
         name: "add",
         display: "Add Book",
-        mode: "overlay",
-        previous: "list"
+        mode: "overlay"
     },
     dictionary: {
         name: "dictionary",
         display: "Dictionary",
-        mode: "overlay",
-        previous: "book"
+        mode: "overlay"
     },
+    page: {
+        name: "page",
+        display: "Save Page Number",
+        mode: "overlay"
+    }
 };
 
 window.globalFunctions = {
     /**
      * Change the current view (main-page content).
      * @arg {string} name the ID of the view to change to.
-     * @arg {boolean} keepURL whether to keep the curent hash or not
+     * @arg {boolean} replace whether to replace the history state or add a new one
      */
-    changeView: function(name, keepURL) {
-        // stop reading if necessary
-        vm.stopReading();
+    changeView: function(name, replace) {
         // update view
         this.currentView = this.views[name];
-        // update hash
-        if (!keepURL && this.currentView.mode === "base") {
-            window.location.hash = "view=" + name;
-        }
+        // stop reading if need be
+        if (this.currentView.name === "list") vm.stopReading();
+        // add to history
+        Router.changeView(name, replace);
         // hide the side menu
         var sideMenu = $(".mdl-layout__obfuscator.is-visible");
         if (sideMenu) sideMenu.click(); 
+
+        if (this.dataChanged) this.dataChanged(); // can't hurt
+    },
+
+    goBack: function() {
+        window.history.back();
     }
 };
 
@@ -187,11 +194,27 @@ window.vm = new Vue({
          * Timestamp for when the user started reading.
          * @type {number}
          */
-        timestamp: -1
+        timestamp: -1,
+
+        /** 
+         * Time spent reading since pressing 'Start Readgin'
+         */
+        sessionTime: ""
+    },
+
+    computed: {
+        /**
+         * Total time spent reading current book
+         */
+        totalTime: function() {
+            return this.getTimeString(this.currentBook.timeReading); 
+        }
     },
 
     methods: {
         changeView: window.globalFunctions.changeView,
+
+        goBack: window.globalFunctions.goBack,
 
         /**
          * Start reading and timing.
@@ -199,9 +222,12 @@ window.vm = new Vue({
         startReading: function() {
             this.isReading = true;
             this.timestamp = Date.now();
-            if (window.location.hash.indexOf("&reading=true") < 0) {
-                window.location.hash += "&reading=true";
-            }
+            Router.addStateData({reading: this.timestamp});
+
+            // start voice commands
+            annyang.start();
+
+            requestAnimationFrame(this.timerUpdate);
         },
 
         /**
@@ -210,11 +236,45 @@ window.vm = new Vue({
         stopReading: function() {
             if (!this.isReading) return;
             this.isReading = false;
-            window.location.hash = window.location.hash
-                .replace("&reading=true", "");
+            Router.addStateData({reading: false});
+
+            //stop voice commands
+            annyang.abort();
+
             var interval = Date.now() - this.timestamp;
-            this.currentBook.timeReading += interval / 1000;
+            this.currentBook.timeReading += interval;
             this.dataChanged();
+
+            this.changeView("page");
+        },
+
+        /**
+         * Create a time string for a given interval.
+         * @arg interval {number} the interval in ms.
+         */
+        getTimeString: function(interval) {
+            var seconds = ~~(interval / 1000);
+            var minutes = ~~(seconds / 60); 
+            var hours = ~~(minutes / 60);
+            var zero = "0";
+            seconds %= 60;
+            minutes %= 60;
+            // pad
+            if (seconds < 10) seconds = "0" + seconds; 
+                else seconds = seconds.toString();
+            if (minutes < 10) minutes = "0" + minutes; 
+                else minutes = minutes.toString();
+            
+            return `${hours}:${minutes}:${seconds}`;
+        },
+
+        /**
+         * Force update of timeString
+         */
+        timerUpdate: function() {
+            this.sessionTime = this.getTimeString(Date.now() - this.timestamp);
+
+            if (this.isReading) requestAnimationFrame(this.timerUpdate);
         },
 
         /**
@@ -249,7 +309,7 @@ window.vm = new Vue({
         loadBook: function(id) {
             this.currentBook = this.books[id];
             this.changeView("book");
-            window.location.hash += "&book=" + id;
+            Router.addStateData({book: id});
         },
 
         /**
@@ -265,8 +325,14 @@ window.vm = new Vue({
          * Search the dictionary and display the result.
          */
         searchDictionary: function() {
+            Router.addStateData({word: this.input.dict});
+
             var definition = Dictionary[this.input.dict.toUpperCase()];
-            if (!definition) return;
+            if (!definition) {
+                this.definition = "Sorry, no definition could be found.";
+                return;
+            }
+
             // fix some problems with the JSON
             definition = definition.replace(/(\w)\.(\w)/g, "$1.<br />$2");
             definition = definition.replace(/(\w),(\w)/g, "$1, $2");
@@ -294,48 +360,13 @@ window.vm = new Vue({
 });
 
 StorageManager.loadData(function(books) {
-    if (!books) return;
-    vm.$set("books", books);
-    vm.id = Object.keys(books).length; // avoid ID collisions
+    if (books) {
+        vm.$set("books", books);
+        vm.id = Object.keys(books).length; // avoid ID collisions
+    } 
+    Router.loadState(history.state);
 
-    parseURL();
 });
 
-window.addEventListener("beforeunload", function() {
-    vm.stopReading();
-});
-
-function parseURL() {
-    if (window.location.hash === "") return;
-
-    var getQueryVariable = function(variable) {
-        var query = window.location.hash.slice(1);
-        var vars = query.split('&');
-
-        for (var i = 0; i < vars.length; i++) {
-            var pair = vars[i].split('=');
-
-            if (decodeURIComponent(pair[0]) === variable) {
-                return decodeURIComponent(pair[1]);
-            }
-        }
-        return null;
-    }
-
-    var view = getQueryVariable("view");
-
-    switch (view) {
-        case "book":
-            var book = getQueryVariable("book");
-            if (book) {
-                vm.currentBook = vm.books[book];
-                if (getQueryVariable("reading")) {
-                    vm.startReading();
-                }
-            }
-            break;
-    }
-
-    vm.changeView(view, true);
-}
+if (!history.state) Router.addStateData({view: "list"}); 
 

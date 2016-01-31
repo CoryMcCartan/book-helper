@@ -13,7 +13,7 @@ function loadComponent(name, url, options) {
         fetch(url).then((r) => r.text()).then((text) => {
             options.template = text;
             options.ready = function() {
-                componentHandler.upgradeElement(this.$el);
+                componentHandler.upgradeElements(this.$el);
             };
             options.methods = options.methods();
             resolve(options);
@@ -25,4 +25,9 @@ function loadComponent(name, url, options) {
 fetch("data/dictionary.json").then((r) => r.json())
 .then(function(json) {
     window.Dictionary = json;
+});
+
+// service worker for offline
+navigator.serviceWorker.register("service-worker.js").then(() => {
+    console.log("Service Worker registered.");
 });

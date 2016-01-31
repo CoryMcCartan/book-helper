@@ -1,7 +1,7 @@
 <div v-show="active" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
 
-        <button @click="changeView(viewObj.previous)" v-if="viewObj.mode === 'overlay'" class="mdl-layout-icon mdl-button mdl-js-button mdl-button--icon">
+        <button @click="goBack()" v-if="viewObj.mode === 'overlay'" class="mdl-layout-icon mdl-button mdl-js-button mdl-button--icon">
             <i class="material-icons">arrow_back</i>
         </button> 
 

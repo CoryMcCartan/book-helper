@@ -17,6 +17,7 @@ body {
     position: fixed;
     right: 1em;
     bottom: 1em;
+    z-index: 20;
 }
 
 a.mdl-navigation__link > i.material-icons {
@@ -34,6 +35,10 @@ a.mdl-navigation__link.selected {
     margin-top: -2em;
     height: 100vh;
     background-color: #7986CB;
+}
+
+.clock {
+    font-size: 72px;
 }
 
 main {
@@ -87,7 +92,7 @@ main {
     }
 }
 
-.add-input-container, .add-button-container {
+.input-container, .add-button-container {
     display: flex;
     width: 100%;
     flex-wrap: wrap;
