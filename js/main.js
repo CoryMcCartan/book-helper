@@ -338,7 +338,7 @@ window.vm = new Vue({
             definition = definition.replace(/(\w),(\w)/g, "$1, $2");
             definition = definition.replace(/(\w);(\w)/g, "$1, $2");
             definition = definition.replace(/\](\w)/g, "] $1");
-            definition = definition.replace(/See (under )?(\w+)/g, "See <a onclick='ViewModel.dictionaryReference(\"$2\")'>$2</a>");
+            definition = definition.replace(/See (under )?(\w+)/g, "See <a onclick='vm.dictionaryReference(\"$2\")'>$2</a>");
 
             this.definition = definition;
         },
