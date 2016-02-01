@@ -208,6 +208,15 @@ window.vm = new Vue({
          */
         totalTime: function() {
             return this.getTimeString(this.currentBook.timeReading); 
+        },
+
+        /**
+         * Current reading speed.
+         */
+        readingSpeed: function() {
+            var pages = this.currentBook.currentPage - 1;
+            var hours =  this.currentBook.timeReading / 3600000;
+            return Math.round(pages / hours);
         }
     },
 

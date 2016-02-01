@@ -18,8 +18,11 @@ window.Router = (function() {
                 if (state.book) {
                     vm.currentBook = vm.books[state.book];
                     if (state.reading) {
-                        vm.startReading();
-                        vm.timestamp = state.reading;
+                        // save old timestamp
+                        var ts = state.reading;
+                        vm.startReading(); // this will create a new timestamp
+                        history.state.reading = ts;
+                        vm.timestamp = ts; // overwrite new with old
                     }
                 }
                 break;
@@ -30,7 +33,7 @@ window.Router = (function() {
                 }
         }
 
-        vm.changeView(state.view, true);  
+        vm.currentView = vm.views[state.view];
     };
 
     self.changeView = function(name, replace) {
