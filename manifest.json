@@ -2,6 +2,6 @@
     "short_name": "Books",
     "name": "Books",
     "display": "standalone",
-    "background_color": "#EEEEEE",
-    "theme_color": "#3F51B5"
+    "background_color": "#90a4ae",
+    "theme_color": "#90a4ae"
 }
