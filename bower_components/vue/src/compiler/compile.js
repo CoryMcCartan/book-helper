@@ -22,7 +22,7 @@ import {
 // special binding prefixes
 const bindRE = /^v-bind:|^:/
 const onRE = /^v-on:|^@/
-const argRE = /:(.*)$/
+const dirAttrRE = /^v-([^:]+)(?:$|:(.*)$)/
 const modifierRE = /\.[^\.]+/g
 const transitionRE = /^(v-bind:|:)?transition$/
 
@@ -99,6 +99,15 @@ export function compile (el, options, partial) {
  */
 
 function linkAndCapture (linker, vm) {
+  /* istanbul ignore if */
+  if (process.env.NODE_ENV === 'production') {
+    // reset directives before every capture in production
+    // mode, so that when unlinking we don't need to splice
+    // them out (which turns out to be a perf hit).
+    // they are kept in development mode because they are
+    // useful for Vue's own tests.
+    vm._directives = []
+  }
   var originalDirCount = vm._directives.length
   linker()
   var dirs = vm._directives.slice(originalDirCount)
@@ -161,7 +170,7 @@ function teardownDirs (vm, dirs, destroying) {
   var i = dirs.length
   while (i--) {
     dirs[i]._teardown()
-    if (!destroying) {
+    if (process.env.NODE_ENV !== 'production' && !destroying) {
       vm._directives.$remove(dirs[i])
     }
   }
@@ -194,7 +203,6 @@ export function compileAndLinkProps (vm, el, props, scope) {
  *
  * If this is a fragment instance, we only need to compile 1.
  *
- * @param {Vue} vm
  * @param {Element} el
  * @param {Object} options
  * @param {Object} contextOptions
@@ -646,7 +654,7 @@ function makeTerminalNodeLinkFn (el, dirName, value, options, def) {
 function compileDirectives (attrs, options) {
   var i = attrs.length
   var dirs = []
-  var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens
+  var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens, matched
   while (i--) {
     attr = attrs[i]
     name = rawName = attr.name
@@ -700,14 +708,9 @@ function compileDirectives (attrs, options) {
     } else
 
     // normal directives
-    if (name.indexOf('v-') === 0) {
-      // check arg
-      arg = (arg = name.match(argRE)) && arg[1]
-      if (arg) {
-        name = name.replace(argRE, '')
-      }
-      // extract directive name
-      dirName = name.slice(2)
+    if ((matched = name.match(dirAttrRE))) {
+      dirName = matched[1]
+      arg = matched[2]
 
       // skip v-else (when used with v-show)
       if (dirName === 'else') {

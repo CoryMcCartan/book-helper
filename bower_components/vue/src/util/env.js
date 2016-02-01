@@ -6,6 +6,10 @@ export const inBrowser =
   typeof window !== 'undefined' &&
   Object.prototype.toString.call(window) !== '[object Object]'
 
+export const devtools =
+  inBrowser &&
+  window.__VUE_DEVTOOLS_GLOBAL_HOOK__
+
 export const isIE9 =
   inBrowser &&
   navigator.userAgent.toLowerCase().indexOf('msie 9.0') > 0
@@ -70,6 +74,7 @@ export const nextTick = (function () {
       copies[i]()
     }
   }
+
   /* istanbul ignore if */
   if (typeof MutationObserver !== 'undefined') {
     var counter = 1
@@ -83,7 +88,13 @@ export const nextTick = (function () {
       textNode.data = counter
     }
   } else {
-    timerFunc = setTimeout
+    // webpack attempts to inject a shim for setImmediate
+    // if it is used as a global, so we have to work around that to
+    // avoid bundling unnecessary code.
+    const context = inBrowser
+      ? window
+      : typeof global !== 'undefined' ? global : {}
+    timerFunc = context.setImmediate || setTimeout
   }
   return function (cb, ctx) {
     var func = ctx

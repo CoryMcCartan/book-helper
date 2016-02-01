@@ -8,7 +8,7 @@
 
     <title>Books</title>
 
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.blue_grey-indigo.min.css" />
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.0/material.blue_grey-indigo.min.css" />
     <script src="bower_components/material-design-lite/material.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -117,7 +117,7 @@
                     Page
                 </span> 
                 <span class="flex mdl-typography--headline">
-                    <span class="mdl-typography--display-3-color-contrast">
+                    <span @click="changeView('page')" class="mdl-typography--display-3-color-contrast">
                         {{ currentBook.currentPage }}
                     </span>
                     <span class="small-spacer"></span>
@@ -130,9 +130,12 @@
                     </span>
                     <span class="spacer"></span>
                     <span class="gray">
-                        {{ ~~(100 * currentBook.currentPage / currentBook.pages) }}%
+                        {{ bookProgress }}%
                     </span>
                 </span> 
+                
+                <div id="book-progress" class="mdl-progress mdl-js-progress"></div>
+                <span class="small-vspacer"></span>
 
                 <button @click="startReading" v-show="!isReading" class="mdl-button mdl-js-button">
                     Start Reading
@@ -168,6 +171,15 @@
                 <span class="mdl-typography--subhead gray">
                     pages per hour
                 </span>
+            </div>
+
+            <div  class="book-card mdl-card mdl-shadow--2dp">
+                <form @submit.prevent>
+                    <div class="notes-area mdl-textfield mdl-js-textfield" :class="[currentBook.notes ? 'is-dirty' : '']">
+                        <textarea v-model="currentBook.notes" lazy @change="dataChanged" class="mdl-textfield__input" type="text" rows= "7" id="input.notes" ></textarea>
+                        <label class="mdl-textfield__label" for="input.notes">Notes...</label>
+                    </div>
+                </form>
             </div>
         </span>
 

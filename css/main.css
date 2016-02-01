@@ -2,6 +2,10 @@ body {
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
+* {
+    outline: none;
+}
+
 .flex {
     display: flex;
     align-items: baseline;
@@ -31,10 +35,25 @@ a.mdl-navigation__link.selected {
     color: #222 !important;
 }
 
+.mdl-progress {
+    width: 100%;
+}
+
 #blank-poster {
     margin-top: -2em;
     height: 100vh;
     background-color: #90a4ae;
+}
+
+.notes-area {
+    width: 100%;
+    padding: 0;
+}
+.notes-area > label {
+    top: 4px;
+}
+.notes-area > label:after {
+    bottom: 0;
 }
 
 .clock {

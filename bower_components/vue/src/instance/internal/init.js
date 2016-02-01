@@ -51,7 +51,8 @@ export default function (Vue) {
     this._isDestroyed =
     this._isReady =
     this._isAttached =
-    this._isBeingDestroyed = false
+    this._isBeingDestroyed =
+    this._vForRemoving = false
     this._unlinkFn = null
 
     // context:
@@ -79,6 +80,13 @@ export default function (Vue) {
     // push self into parent / transclusion host
     if (this.$parent) {
       this.$parent.$children.push(this)
+    }
+
+    // save raw constructor data before merge
+    // so that we know which properties are provided at
+    // instantiation.
+    if (process.env.NODE_ENV !== 'production') {
+      this._runtimeData = options.data
     }
 
     // merge options.

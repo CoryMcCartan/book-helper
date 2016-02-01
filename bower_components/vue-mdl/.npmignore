@@ -1,8 +1,0 @@
-build
-coverage
-test
-src
-circle.yml
-logo.png
-selenium-debug.log
-.*

@@ -164,6 +164,7 @@ window.vm = new Vue({
          * @property {number} currentPage the last saved reading location.
          * @property {number} timeReading the total time spent reading the book,
          * in seconds.
+         * @property {string} notes notes the user has taken on the book.
          */
 
         /**
@@ -222,6 +223,12 @@ window.vm = new Vue({
             }
 
             return speed;
+        },
+
+        bookProgress: function() {
+            var amount = this.currentBook.currentPage / this.currentBook.pages;
+            $("#book-progress").MaterialProgress.setProgress(100 * amount); 
+            return Math.round(100 * amount);
         }
     },
 
