@@ -165,6 +165,7 @@ window.vm = new Vue({
          * @property {number} timeReading the total time spent reading the book,
          * in seconds.
          * @property {string} notes notes the user has taken on the book.
+         * @property {array} pictures an array of reference pictures the user has taken.
          */
 
         /**
@@ -307,7 +308,9 @@ window.vm = new Vue({
                 author: this.input.author,
                 pages: this.input.pagecount,
                 currentPage: 1,
-                timeReading: 0
+                timeReading: 0,
+                notes: null,
+                pictures: []
             });
             this.cancelAdd();
             this.dataChanged();

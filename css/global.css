@@ -1,0 +1,35 @@
+body {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+* {
+    outline: none;
+}
+
+/* VARIOUS UTILITY CLASSES */
+.flex {
+    display: flex;
+    align-items: baseline;
+}
+
+.flex.vcenter {
+    align-items: center;
+}
+
+.gray {
+    color: #ccc;
+}
+
+/* SPACERS */
+.spacer {
+    flex-grow: 1;
+}
+
+.small-spacer {
+    display: inline-block;
+    width: 8px;
+}
+
+.small-vspacer {
+    height: 8px;
+}

@@ -12,6 +12,9 @@
     <script src="bower_components/material-design-lite/material.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/fixes.css">
+    <link rel="stylesheet" href="css/cards.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -53,7 +56,7 @@
                 <span class="spacer"></span>
 
                 <button @click.stop="removeBook(id)" class="mdl-button mdl-js-button mdl-button--icon">
-                    <i class="material-icons">close</i>
+                    <i class="material-icons">clear</i>
                 </button>
             </li>
         </ul>
@@ -180,6 +183,29 @@
                         <label class="mdl-textfield__label" for="input.notes">Notes...</label>
                     </div>
                 </form>
+            </div>
+
+            <div class="book-list-card mdl-card mdl-shadow--2dp">
+                <ul class="mdl-list">
+                    <li v-for="picture in currentBook.pictures" class="flex">
+                        <span clas="mdl-typography--subhead">
+                            {{ picture.caption }}
+                        </span>
+                        <span class="spacer"></span>
+                        <button class="mdl-button mdl-js-button mdl-button--icon">
+                            <i class="material-icons">clear</i>
+                        </button>
+                    </li>
+                </ul>
+
+                <span class="card-button-border"></span>
+                <span class="small-vspacer"></span>
+
+                <button @click="" class="mdl-button mdl-js-button">
+                    Add Reference Picture 
+                </button>
+
+                <span class="small-vspacer"></span>
             </div>
         </span>
 

@@ -1,0 +1,42 @@
+main {
+    background-color: #eee;
+}
+
+.mdl-card {
+    min-height: 0;
+}
+
+a.mdl-navigation__link > i.material-icons {
+    position: relative;
+    right: 7px;
+    line-height: 0.0;
+}
+a.mdl-navigation__link.selected {
+    background-color: #d0d0d0;
+    color: #222 !important;
+}
+
+.mdl-progress {
+    width: 100%;
+}
+
+.mdl-button--fab {
+    position: fixed;
+    right: 1em;
+    bottom: 1em;
+    z-index: 20;
+}
+
+.mdl-textfield { 
+    min-width: 300px;
+    flex-basis: 300px;
+    flex-grow: 1;
+}
+
+
+/* NO ARROWS ON NUMBER INPUTS */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none; 
+    margin: 0; 
+}
