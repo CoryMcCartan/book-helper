@@ -216,7 +216,12 @@ window.vm = new Vue({
         readingSpeed: function() {
             var pages = this.currentBook.currentPage - 1;
             var hours =  this.currentBook.timeReading / 3600000;
-            return Math.round(pages / hours);
+            var speed =  Math.round(pages / hours);
+            if (isNaN(speed) || !isFinite(speed)) {
+                speed = 0;
+            }
+
+            return speed;
         }
     },
 
