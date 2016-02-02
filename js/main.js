@@ -389,7 +389,7 @@ window.vm = new Vue({
                 };
             });
 
-            this.changeView("picture");
+            this.changeView("takePicture");
         },
 
         takePicture: function() {
