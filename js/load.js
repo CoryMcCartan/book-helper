@@ -28,6 +28,6 @@ fetch("data/dictionary.json").then((r) => r.json())
 });
 
 // service worker for offline
-navigator.serviceWorker.register("service-worker.js").then(() => {
-    console.log("Service Worker registered.");
-});
+// navigator.serviceWorker.register("service-worker.js").then(() => {
+//     console.log("Service Worker registered.");
+// });
