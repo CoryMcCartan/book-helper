@@ -29,8 +29,12 @@ window.Router = (function() {
             case "dictionary":
                 if (state.word) {
                     vm.input.dict = state.word;
-                    setTimeout(vm.searchDictionary, 700);
+                    setTimeout(vm.searchDictionary, 1500);
                 }
+                break;
+            case "picture":
+                vm.showCamera();
+                break;
         }
 
         vm.currentView = vm.views[state.view];

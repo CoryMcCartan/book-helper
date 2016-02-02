@@ -63,3 +63,16 @@ li .book-author {
     box-sizing: border-box;
 }
 
+video {
+    height: 100%;
+    width: 100%;
+}
+
+img.showPicture {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+div.showPictureContainer {
+    overflow: auto;
+}

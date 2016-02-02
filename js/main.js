@@ -55,9 +55,14 @@ window.views = {
         display: "Dictionary",
         mode: "overlay"
     },
-    page: {
-        name: "page",
-        display: "Save Page Number",
+    takePicture: {
+        name: "takePicture",
+        display: "Add Picture",
+        mode: "overlay"
+    },
+    showPicture: {
+        name: "showPicture",
+        display: "View Picture",
         mode: "overlay"
     }
 };
@@ -86,6 +91,9 @@ window.globalFunctions = {
         window.history.back();
     }
 };
+
+window.globalVariables = {
+}
 
 window.vm = new Vue({
     el: "#app",
@@ -152,7 +160,13 @@ window.vm = new Vue({
              * Linked to the text input for the dictionary look-up.
              * @type {string}
              */
-            dict: null
+            dict: null,
+
+            /**
+             * Name of picture just taken.
+             * @type {string}
+             */
+            pictureName: null
         },
 
         /**
@@ -179,6 +193,11 @@ window.vm = new Vue({
          * @type {BookInstance}
          */
         currentBook: null,
+
+        /**
+         * Currently taken/displayed picture data.
+         */
+        currentPictureData: null,
 
         /**
          * The currently displayed dictionary entry
@@ -267,7 +286,7 @@ window.vm = new Vue({
             this.currentBook.timeReading += interval;
             this.dataChanged();
 
-            this.changeView("page");
+            $("#dialog-page-number").showModal();
         },
 
         /**
@@ -297,6 +316,11 @@ window.vm = new Vue({
             this.sessionTime = this.getTimeString(Date.now() - this.timestamp);
 
             if (this.isReading) requestAnimationFrame(this.timerUpdate);
+        },
+
+        savePage: function() {
+            $("#dialog-page-number").close();
+            this.dataChanged();
         },
 
         /**
@@ -343,6 +367,71 @@ window.vm = new Vue({
         removeBook: function(id) {
             Vue.delete(this.books, id);
             this.dataChanged();
+        },
+
+        /**
+         * Load the picture-taking interface
+         */
+        showCamera: function() {
+            var video = $("video");
+
+            navigator.mediaDevices.getUserMedia({
+                audio: false, 
+                video: true
+            })
+            .then(function(stream) {
+                video.src = window.URL.createObjectURL(stream);
+                video.onloadedmetadata = function(e) {
+                    video.height = e.target.videoHeight;
+                    video.width = e.target.videoWidth;
+
+                    video.play();
+                };
+            });
+
+            this.changeView("picture");
+        },
+
+        takePicture: function() {
+            var video = $("video");
+            var canvas = document.createElement("canvas");
+            canvas.height = video.height;
+            canvas.width = video.width;
+            var ctx = canvas.getContext("2d");
+
+
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            this.currentPictureData = canvas.toDataURL();
+
+            video.pause();
+
+            $("#dialog-name-picture").showModal();
+        },
+
+        cancelPicture: function() {
+            $("#dialog-name-picture").close();
+            this.currentPictureData = null;
+            
+            this.goBack();
+        },
+
+        savePicture: function() {
+            this.currentBook.pictures.push({
+                caption: this.input.pictureName,
+                data: this.currentPictureData
+            });
+
+            this.dataChanged(); // save
+            this.cancelPicture(); // cleanup
+        },
+
+        deletePicture: function(picture) {
+            this.currentBook.pictures.$remove(picture); 
+        },
+
+        showPicture: function(picture) {
+            this.currentPictureData = picture.data;
+            this.changeView("showPicture");
         },
 
         /**
