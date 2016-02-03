@@ -36,7 +36,7 @@
             </ul>
         </span>
 
-        <div id="blank-poster" v-show="!Object.keys(books).length"> </div>
+        <div id="blank-poster" v-show="listEmpty"></div>
 
         <div class="list-card mdl-card mdl-shadow--2dp">
         <ul class="mdl-list">
@@ -266,7 +266,7 @@
     <layout :view-obj="views['takePicture']" :current-view.sync="currentView">
         <video autoplay></video>
 
-        <button @click="takePicture" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+        <button @click="takePicture" id="shutter" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
             <i class="material-icons">camera</i>
         </button>
 
@@ -281,10 +281,10 @@
                 </div>
 
                 <div class="mdl-dialog__actions">
-                    <button @click="savePicture" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised">
+                    <button @click.stop="savePicture" class="mdl-button mdl-js-button mdl-button--colored mdl-button--raised">
                         Save
                     </button>
-                    <button @click="cancelPicture" type="button" class="mdl-button mdl-js-button mdl-button--colored">
+                    <button @click.stop="cancelPicture" type="button" class="mdl-button mdl-js-button mdl-button--colored">
                         Cancel
                     </button>
                 </div>

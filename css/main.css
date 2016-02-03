@@ -68,9 +68,14 @@ video {
     width: 100%;
 }
 
+#shutter {
+    right: calc(50vw - 28px);
+}
+
+main
+
 img.showPicture {
-    min-width: 100%;
-    min-height: 100%;
+    height: calc(100vh - 56px);
 }
 
 div.showPictureContainer {

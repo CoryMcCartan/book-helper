@@ -92,9 +92,6 @@ window.globalFunctions = {
     }
 };
 
-window.globalVariables = {
-}
-
 window.vm = new Vue({
     el: "#app",
 
@@ -217,10 +214,21 @@ window.vm = new Vue({
          */
         timestamp: -1,
 
-        /** 
-         * Time spent reading since pressing 'Start Readgin'
+        /**
+         * Whether the camera's pictures are taller than they are wide.
+         * @type {boolean}
          */
-        sessionTime: ""
+        isTall: true,
+
+        /** 
+         * Time spent reading since pressing 'Start Reading'
+         */
+        sessionTime: "",
+
+        /**
+         * Whether the book list is empty
+         */
+        listEmpty: true,
     },
 
     computed: {
@@ -426,7 +434,9 @@ window.vm = new Vue({
         },
 
         cancelPicture: function() {
-            $("#dialog-name-picture").close();
+            try {
+                $("#dialog-name-picture").close();   
+            } catch (e) {}
             this.currentPictureData = null;
             
             this.goBack();
@@ -487,6 +497,12 @@ window.vm = new Vue({
          * Called when some permanent data has changed.
          */
         dataChanged: StorageManager.saveData
+    },
+    
+    watch: {
+        books: function(v) {
+            this.listEmpty = !(Object.keys(v).length); 
+        }
     }
 });
 
@@ -500,4 +516,3 @@ StorageManager.loadData(function(books) {
 });
 
 if (!history.state) Router.addStateData({view: "list"}); 
-
