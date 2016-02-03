@@ -375,11 +375,10 @@ window.vm = new Vue({
         showCamera: function() {
             var video = $("video");
 
-            navigator.mediaDevices.getUserMedia({
+            navigator.webkitGetUserMedia({
                 audio: false, 
                 video: true
-            })
-            .then(function(stream) {
+            }, function(stream) {
                 video.src = window.URL.createObjectURL(stream);
                 video.onloadedmetadata = function(e) {
                     video.height = e.target.videoHeight;
@@ -387,7 +386,7 @@ window.vm = new Vue({
 
                     video.play();
                 };
-            });
+            }, () => {});
 
             this.changeView("takePicture");
         },
