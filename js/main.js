@@ -374,21 +374,39 @@ window.vm = new Vue({
          */
         showCamera: function() {
             var video = $("video");
+            var this_out = this; // 'this' inside callback isn't the same
 
-            navigator.webkitGetUserMedia({
-                audio: false, 
-                video: true
-            }, function(stream) {
-                video.src = window.URL.createObjectURL(stream);
-                video.onloadedmetadata = function(e) {
-                    video.height = e.target.videoHeight;
-                    video.width = e.target.videoWidth;
+            MediaStreamTrack.getSources(function(sources) {
+                var id = null;
+                // find ID of rear camera, if one exists
+                for (let i = 0; i < sources.length; i++) {
+                    if (sources[i].kind === "video") {
+                        id = sources[i].id;
 
-                    video.play();
-                };
-            }, () => {});
+                        if (sources[i].facing === "environment") {
+                            break;
+                        }
+                    }
+                }
 
-            this.changeView("takePicture");
+                // use that media device
+                navigator.webkitGetUserMedia({
+                    audio: false, 
+                    video: {
+                        optional: [{sourceId: id}]
+                    }
+                }, function(stream) {
+                    video.src = window.URL.createObjectURL(stream);
+                    video.onloadedmetadata = function(e) {
+                        video.height = e.target.videoHeight;
+                        video.width = e.target.videoWidth;
+
+                        video.play();
+                    };
+                }, () => {});
+
+                this_out.changeView("takePicture");
+            });
         },
 
         takePicture: function() {
@@ -426,6 +444,7 @@ window.vm = new Vue({
 
         deletePicture: function(picture) {
             this.currentBook.pictures.$remove(picture); 
+            this.dataChanged();
         },
 
         showPicture: function(picture) {
