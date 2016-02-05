@@ -10,7 +10,6 @@
     <title>Books</title>
 
     <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.1.0/material.blue_grey-indigo.min.css" />
-    <script src="bower_components/material-design-lite/material.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,300' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="css/global.css">
@@ -19,7 +18,7 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div id="app">
+    <div id="app" style="opacity: 0">
 
     <layout :view-obj="views['list']" :current-view.sync="currentView">
         <span slot="nav-bar">
@@ -307,14 +306,15 @@
 
     </div>
 
-    <script src="bower_components/vue/dist/vue.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="bower_components/localforage/dist/localforage.nopromises.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="bower_components/annyang/annyang.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/storage.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/load.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/router.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/layout.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/voice.js" type="text/javascript" charset="utf-8"></script>
+    <script async src="bower_components/material-design-lite/material.min.js"></script>
+    <script defer src="bower_components/vue/dist/vue.min.js" type="text/javascript" charset="utf-8"></script>
+    <script defer src="bower_components/localforage/dist/localforage.nopromises.min.js" type="text/javascript" charset="utf-8"></script>
+<!--     <script src="bower_components/annyang/annyang.min.js" type="text/javascript" charset="utf-8"></script> -->
+    <script defer src="js/storage.js" type="text/javascript" charset="utf-8"></script>
+    <script defer src="js/load.js" type="text/javascript" charset="utf-8"></script>
+    <script defer src="js/router.js" type="text/javascript" charset="utf-8"></script>
+    <script defer src="js/layout.js" type="text/javascript" charset="utf-8"></script>
+    <script defer src="js/main.js" type="text/javascript" charset="utf-8"></script>
+<!--     <script src="js/voice.js" type="text/javascript" charset="utf-8"></script> -->
 </body>
 </html>

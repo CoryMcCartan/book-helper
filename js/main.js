@@ -514,7 +514,6 @@ StorageManager.loadData(function(books) {
         vm.id = Object.keys(books).length; // avoid ID collisions
     } 
     Router.loadState(history.state);
-
 });
 
 if (!history.state) Router.addStateData({view: "list"}); 

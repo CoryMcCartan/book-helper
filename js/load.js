@@ -33,3 +33,9 @@ navigator.serviceWorker.register("service-worker.js", {
 }).then(() => {
     console.log("Service Worker registered.");
 });
+
+document.addEventListener("readystatechange", function(e) {
+    if (document.readyState !== "complete") return;
+    
+    $("#app").style.opacity = 1.0;
+});
