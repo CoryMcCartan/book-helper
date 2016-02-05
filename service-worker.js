@@ -3,11 +3,10 @@
  */
 var CACHE_VERSION = "v1";
 var STATIC_CACHE = [
-    "https://storage.googleapis.com/code.getmdl.io/1.1.0/material.blue_grey-indigo.min.css",
     "bower_components/material-design-lite/material.min.js",
     "https://fonts.googleapis.com/css?family=Roboto:400,500,700,300",
     "https://fonts.googleapis.com/icon?family=Material+Icons",
-    "data/dictionary.json",
+    "data/dictionary.json"
 ];
 var DYNAMIC_CACHE = [
     location.pathname.replace("service-worker.js", ""), // basepath
@@ -49,6 +48,7 @@ this.addEventListener("fetch", function(e) {
     };
 
     if (has(STATIC_CACHE, url.pathname)) { // prefer cached version
+        e.request.mode = "no-cors";
         e.respondWith(caches.match(e.request));
     } else if (has(DYNAMIC_CACHE, url.pathname)) { // prefer network version
         e.respondWith(

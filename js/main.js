@@ -274,7 +274,7 @@ window.vm = new Vue({
             Router.addStateData({reading: this.timestamp});
 
             // start voice commands
-            annyang.start();
+            // annyang.start();
 
             requestAnimationFrame(this.timerUpdate);
         },
@@ -288,7 +288,7 @@ window.vm = new Vue({
             Router.addStateData({reading: false});
 
             //stop voice commands
-            annyang.abort();
+            // annyang.abort();
 
             var interval = Date.now() - this.timestamp;
             this.currentBook.timeReading += interval;
@@ -437,7 +437,9 @@ window.vm = new Vue({
             try {
                 $("#dialog-name-picture").close();   
             } catch (e) {}
+
             this.currentPictureData = null;
+            this.input.pictureName = null;
             
             this.goBack();
         },
